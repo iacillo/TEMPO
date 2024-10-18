@@ -3,12 +3,11 @@ const key = 'f065fa37f8d245f7b35221028240810'
 
 async function getLocalizacao(){
     //https://meuip.com/api/meuip.php
-
+    try{
     const base = `http://ip-api.com/json/`
     //const base = `https://ipapi.co/json/`;
     const response = await fetch(base)
     const dados = await response.json()
-    console.log(response,dados)
     const {ok} = response
     const {error} = dados
     if (ok && !error) {
@@ -17,7 +16,10 @@ async function getLocalizacao(){
         return local
         //atualizarCidade(local)
     }else{
-        return{erro:"Erro ao acessar localização"}
+        return false
+    }
+    }catch(Exception){
+        return false
     }
 }
 
@@ -116,7 +118,10 @@ function carregando(flag){
 window.addEventListener("load",
     async ()=>{
         carregando(true)
-        const local = await getLocalizacao()
+        let local = await getLocalizacao()
+        if (!local){
+            local = {estado:"RJ", cidade:"Volta Redonda"}
+        }
         await carregarEstados()
         await carregarCidades(local.estado)
         const tempo = await getTempo(key,local.cidade)
