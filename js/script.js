@@ -125,6 +125,7 @@ window.addEventListener("load",
     async ()=>{
         carregando(true)
         const local = await getLocalizacao()
+        console.log(local)
         await carregarEstados()
         await carregarCidades(local.estado)
         const tempo = await getTempo(key,local.cidade)
