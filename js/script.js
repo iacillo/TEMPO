@@ -4,10 +4,11 @@ const key = 'f065fa37f8d245f7b35221028240810'
 async function getLocalizacao(){
     //https://meuip.com/api/meuip.php
 
-    const base = `https://ip-api.com/json/`
+    const base = `http://ip-api.com/json/`
     //const base = `https://ipapi.co/json/`;
     const response = await fetch(base)
     const dados = await response.json()
+    console.log(response,dados)
     const {ok} = response
     const {error} = dados
     if (ok && !error) {
