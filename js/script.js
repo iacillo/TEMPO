@@ -3,24 +3,30 @@ const key = 'f065fa37f8d245f7b35221028240810'
 
 async function getLocalizacao(){
     //https://meuip.com/api/meuip.php
-    try{
-    //const base = `http://ip-api.com/json/`
-    const base = `https://ipapi.co/json/`;
-    const response = await fetch(base)
-    const dados = await response.json()
-    const {ok} = response
-    const {error} = dados
-    if (ok && !error) {
-        const {city, region, countryCode, lat, lon} = dados
-        const local = {cidade:city, estado:region,pais:countryCode,lat:lat,lon:lon}
-        return local
-        //atualizarCidade(local)
-    }else{
-        return false
-    }
-    }catch(Exception){
-        return false
-    }
+
+    //try{
+        const baseip = 'https://api.ipify.org/?format=jsonp&callback'
+        //const base = `http://ip-api.com/json/${ip}`
+        //const base = `https://ipapi.co/json/`;
+        const respip = await fetch(baseip)
+        const textip = (await respip.text()).replace("(","").replace(")","").replace(";","")
+        const ip = JSON.parse(textip).ip
+        const base = `http://ip-api.com/json/${ip}`
+        const response = await fetch(base)
+        const dados = await response.json()
+        const {ok} = response
+        const {error} = dados
+        if (ok && !error) {
+            const {city, region, countryCode, lat, lon} = dados
+            const local = {cidade:city, estado:region,pais:countryCode,lat:lat,lon:lon}
+            return local
+            //atualizarCidade(local)
+        }else{
+            return false
+        }
+    // }catch(error){
+    //     return false
+    // }
 }
 
 
