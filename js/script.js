@@ -124,10 +124,7 @@ function carregando(flag){
 window.addEventListener("load",
     async ()=>{
         carregando(true)
-        let local = await getLocalizacao()
-        if (!local){
-            local = {estado:"RJ", cidade:"Volta Redonda"}
-        }
+        const local = await getLocalizacao()
         await carregarEstados()
         await carregarCidades(local.estado)
         const tempo = await getTempo(key,local.cidade)
