@@ -24,14 +24,21 @@ body{
     background-color: rgb(181, 172, 242);
     padding: 20px;
     border-radius: 10px;
-    min-width: 350px;
+    min-width: 320px;
     box-shadow: rgba(0, 0, 0, 0.181) 10px 10px;
+    margin: 20px;
 }
 .display .localidade{
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 .display .titulo{
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1.5em;
     font-weight: 500;
@@ -39,11 +46,23 @@ body{
     margin-bottom: 15px;
     border-bottom: 1px dotted gray;
 }
+.display .titulo img{
+    width: 30px    ;
+}
 .display select{
     padding: 10px;
     border-radius: 5px;
     border: 1px solid gray;
     outline: none;
+    width: 200px;
+}
+.display .field{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: first baseline;
+    padding-left: 5px;
+    color: #fff;
 }
 .display .icone{
     display: flex;
