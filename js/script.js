@@ -94,12 +94,18 @@ async function getTempo(key,cidade) {
     if(error || !ok){
         return {erro:error.message,response:ok}
     }else{
+        const option = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        }
         const {name:cidade,region:estado} = dados.location
         const {text:condicao, icon} = dados.current.condition
         const {temp_c:temperatura, humidity:umidade, last_updated:atualizacao} = dados.current
-        const tempo = {cidade:cidade,estado:await getUF(estado),condicao:condicao,icone:icon,temperatura:temperatura,umidade:umidade,atualizacao:atualizacao}
+        const tempo = {cidade:cidade,estado:await getUF(estado),condicao:condicao,icone:icon,temperatura:temperatura,umidade:umidade,atualizacao:new Date(atualizacao).toLocaleDateString("pt-BR",option)}
         return tempo
-        //atualizarDisplay(condicao,icon,temperatura,umidade,atualizacao)
     }
     
 }
