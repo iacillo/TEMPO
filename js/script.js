@@ -111,12 +111,27 @@ async function atualizarCidade({cidade,estado}){
     document.querySelector("#cidade").value = indice.value
 
 }
+function showErro(flag){
+    if(flag){
+        document.querySelector(".erro").style.display = ""
+        document.querySelector(".info").style.display = "none"
+    }else{
+        document.querySelector(".erro").style.display = "none"
+        document.querySelector(".info").style.display = ""
+    }
+}
 function atualizarDisplay({condicao,icone,temperatura,umidade,atualizacao}){
-    document.querySelector("#condicao").innerHTML = condicao
-    document.querySelector("#icone").src=`https://${icone}`;
-    document.querySelector("#temperatura").innerHTML = temperatura + "<sup>°c</sup>"
-    document.querySelector("#umidade").innerHTML = umidade + " %"
-    document.querySelector("#atualizacao").innerHTML = atualizacao
+    if(temperatura){
+        showErro(false)
+        document.querySelector("#condicao").innerHTML = condicao
+        document.querySelector("#icone").src=`https://${icone}`;
+        document.querySelector("#temperatura").innerHTML = temperatura + "<sup>°c</sup>"
+        document.querySelector("#umidade").innerHTML = umidade + " %"
+        document.querySelector("#atualizacao").innerHTML = atualizacao
+    }else{
+        showErro(true)
+    }
+    
 }
 async function carregarEstados() {
     const estados = await getUFs()
