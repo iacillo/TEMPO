@@ -9,6 +9,7 @@ function isGeoLocaliza(){
     return navigator.geolocation
 }
 
+//não funciona em servidor, apenas localmente
 async function getLocalizacao(){
     //https://meuip.com/api/meuip.php
     //try{
