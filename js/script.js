@@ -1,9 +1,16 @@
 
 const key = 'f065fa37f8d245f7b35221028240810'
 
+function mapa(){
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=-22.5218&lon=-44.1012`
+}
+
+function isGeoLocaliza(){
+    return navigator.geolocation
+}
+
 async function getLocalizacao(){
     //https://meuip.com/api/meuip.php
-
     //try{
         const baseip = 'https://api.ipify.org/?format=jsonp&callback'
         //const base = `http://ip-api.com/json/${ip}`
@@ -31,7 +38,7 @@ async function getLocalizacao(){
 
 
 async function getCidades(uf) {
-    //{}
+
     const base = `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
     const response = await fetch(base)
     const dados = await response.json()
@@ -58,6 +65,17 @@ async function getUFs() {
         return ["Erro ao acessar estados"]
     }
 }
+async function getUF(nome) {
+    const estados = await getUFs()
+    const uf = estados.find(estado => estado.nome === nome)
+    if(uf) return uf.sigla
+    else{
+        //const v = nome.split(" ")
+        //return v[0].charAt(0)+v[v.length-1].charAt(0)
+        return nome
+    }
+    
+}
 
 function removerAcentos(texto){
     return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
@@ -71,21 +89,26 @@ async function getTempo(key,cidade) {
     const dados = await response.json()
     const {ok} = response
     const {error} = dados
-    
+
     if(error || !ok){
         return {erro:error.message,response:ok}
     }else{
+        const {name:cidade,region:estado} = dados.location
         const {text:condicao, icon} = dados.current.condition
         const {temp_c:temperatura, humidity:umidade, last_updated:atualizacao} = dados.current
-        const tempo = {condicao:condicao,icone:icon,temperatura:temperatura,umidade:umidade,atualizacao:atualizacao}
+        const tempo = {cidade:cidade,estado:await getUF(estado),condicao:condicao,icone:icon,temperatura:temperatura,umidade:umidade,atualizacao:atualizacao}
         return tempo
         //atualizarDisplay(condicao,icon,temperatura,umidade,atualizacao)
     }
     
 }
 async function atualizarCidade({cidade,estado}){
+    const c = cidade.toLowerCase()
+    const e = estado.toLowerCase()
+    const opt =[...document.querySelector("#cidade").options]
+    const indice = opt.find(option=>option.value.toLowerCase() == cidade.toLowerCase())
     document.querySelector("#estado").value = estado
-    document.querySelector("#cidade").value = cidade
+    document.querySelector("#cidade").value = indice.value
 
 }
 function atualizarDisplay({condicao,icone,temperatura,umidade,atualizacao}){
@@ -120,18 +143,32 @@ function carregando(flag){
     }
 }
 
+async function aualizarPagina(cidade) {
+    carregando(true)
+    const tempo = await getTempo(key,cidade)
+    await carregarEstados()
+    await carregarCidades(tempo.estado)
+    atualizarCidade(tempo)
+    atualizarDisplay(tempo)
+    carregando(false)
+}
+
 //CARREGAR A PAGINA
 window.addEventListener("load",
     async ()=>{
-        carregando(true)
-        const local = await getLocalizacao()
-        console.log(local)
-        await carregarEstados()
-        await carregarCidades(local.estado)
-        const tempo = await getTempo(key,local.cidade)
-        atualizarCidade(local)
-        atualizarDisplay(tempo)
-        carregando(false)
+        
+        if(isGeoLocaliza()){
+            navigator.geolocation.getCurrentPosition(   
+                async sucesso=>{
+                    const coordenadas=sucesso.coords.latitude+","+sucesso.coords.longitude
+                    aualizarPagina(coordenadas)
+                },
+                async erro=>{
+                    const cidade = 'Rio de Janeiro'
+                    aualizarPagina(cidade)
+                }
+            )
+        }
     }
 )
 //MUDAR A CIDADE
